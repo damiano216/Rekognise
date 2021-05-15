@@ -1,0 +1,45 @@
+import csv
+import boto3
+import os
+
+# getting credential to access AWS rekognition
+with open('new_user_credentials.csv', 'r') as input:
+    next(input)
+    reader = csv.reader(input)
+    for line in reader:
+        access_key_id = line[2]
+        secret_access_key = line[3]
+
+# defining the FILE path that we are gonna iterate through
+path = os.chdir("C:\\Users\\Utente\\Desktop\\rekognition\\images")
+
+# iterating from the file
+for file in os.listdir(path):
+    photo = file
+
+    suffix = photo.split('.')[1]
+    client = boto3.client('rekognition',
+                          aws_access_key_id=access_key_id,
+                          aws_secret_access_key=secret_access_key)
+
+    with open(photo, 'rb') as source_image:
+        source_bytes = source_image.read()
+
+    response = client.detect_labels(Image={'Bytes': source_bytes})
+
+    # giving only one name to the image
+    # result = response['Labels'][0]['Name']
+
+    # giving multiple names to image
+    result = response['Labels'][0]['Name'] + "-" + \
+        response['Labels'][1]['Name'] + "-" + response['Labels'][2]['Name'] + \
+        "-" + response['Labels'][3]['Name'] + \
+        "-" + response['Labels'][4]['Name']
+
+    print(result)
+    print('//////////' * 10)
+    print(photo)
+
+    # renaming the pictures based on their content
+    new_file_name = "{}.".format(result) + suffix
+    os.rename(file, new_file_name)
