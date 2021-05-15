@@ -8,7 +8,7 @@ with open('new_user_credentials.csv', 'r') as input:
         access_key_id = line[2]
         secret_access_key = line[3]
 
-photo = '1234.jpg'
+photo = 'gnamm.jpg'
 client = boto3.client('rekognition',
                       aws_access_key_id=access_key_id,
                       aws_secret_access_key=secret_access_key)
@@ -16,7 +16,9 @@ client = boto3.client('rekognition',
 with open(photo, 'rb') as source_image:
     source_bytes = source_image.read()
 
-response = client.detect_labels(Image={'Bytes': source_bytes})
+response = client.detect_labels(Image={'Bytes': source_bytes},
+                                MaxLabels=4,
+                                MinConfidence=90)
 
 print(response)
 print('//////////' * 10)
