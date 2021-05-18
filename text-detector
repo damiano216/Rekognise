@@ -1,0 +1,37 @@
+import csv
+import boto3
+
+# getting credential to access AWS rekognition
+with open('new_user_credentials_rekognition_service.csv', 'r') as input:
+    next(input)
+    reader = csv.reader(input)
+    for line in reader:
+        access_key_id = line[2]
+        secret_access_key = line[3]
+
+client = boto3.client('rekognition',
+                          aws_access_key_id=access_key_id,
+                          aws_secret_access_key=secret_access_key)
+
+
+#NAME OF FILE TO ANALYZE
+file = "ID.jpeg"
+with open(file, 'rb') as source_image:
+        source_bytes = source_image.read()
+
+
+#response = client.detect_moderation_labels(Image={'Bytes': source_bytes})'
+response = client.detect_text(Image={'Bytes': source_bytes})
+
+
+
+text_content = ""
+n_text_detections = len(response['TextDetections'])
+
+for n in range(n_text_detections):
+  text_content = text_content + response['TextDetections'][n]['DetectedText'] +  ' *** '
+
+
+
+print('///////////////' * 10)
+print("TEXT CONTENT --> " + text_content)
