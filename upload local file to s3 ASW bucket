@@ -1,0 +1,23 @@
+"""
+code to upload a local image to a s3 bucket
+"""
+
+import boto3
+from botocore.client import Config
+
+ACCESS_KEY_ID = 'AKIA2VVEW67ONJDG4ERQ'
+ACCESS_SECRET_KEY = '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'
+BUCKET_NAME = 'ibexbucket'
+
+data = open('hotgirl.jpg', 'rb')
+
+s3 = boto3.resource(
+    's3',
+    aws_access_key_id=ACCESS_KEY_ID,
+    aws_secret_access_key=ACCESS_SECRET_KEY,
+    config=Config(signature_version='s3v4')
+)
+s3.Bucket(BUCKET_NAME).put_object(Key='hotgirl.jpg', Body=data)
+
+print ("Done")
+
