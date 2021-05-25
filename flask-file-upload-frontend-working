@@ -1,3 +1,8 @@
+"""
+this is the python code which uses flask frameworkt o upload a file to a s3 bucket
+"""
+
+
 from flask import Flask, request
 import boto3
 
